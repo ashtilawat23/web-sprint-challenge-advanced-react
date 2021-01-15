@@ -2,44 +2,25 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import CheckoutForm from "./CheckoutForm";
 
-// Write up the two tests here and make sure they are testing what the title shows
-
 test("form header renders", () => {
-  render(<CheckoutForm />);
-  const header = screen.getByText("Checkout");
-  expect(header).toHaveTextContent(/checkout/i);
+    render(<CheckoutForm />);
+
+    const header = screen.getByText(/Checkout Form/i);
+
+    expect(header).toBeInTheDocument();
 });
 
-test("form shows success message on submit with form details", async () => {
-  render(<CheckoutForm />);
+test("form shows success message on submit with form details", () => {
+    render(<CheckoutForm />);
 
-  const firstNameInput = screen.getByLabelText(/first name/i);
-  const lastNameInput = screen.getByLabelText(/last name/i);
-  const addressInput = screen.getByLabelText(/address/i);
-  const cityInput = screen.getByLabelText(/city/i);
-  const stateInput = screen.getByLabelText(/state/i);
-  const zipInput = screen.getByLabelText(/zip/i);
-  const submitButton = screen.getByRole("button", { name: /checkout/i });
+    fireEvent.change(screen.getByLabelText(/first name/i), {target: {value: "Jenny" }});
+    fireEvent.change(screen.getByLabelText(/last name/i), {target: {value: "Patel" }});
+    fireEvent.change(screen.getByLabelText(/address/i), {target: {value: "1928 Glenrock Ave." }});
+    fireEvent.change(screen.getByLabelText(/city/i), {target: {value: "Brooklyn, New York" }});
+    fireEvent.change(screen.getByLabelText(/state/i), {target: {value: "NY" }});
+    fireEvent.change(screen.getByLabelText(/zip/i), {target: {value: "10020" }});
 
-  fireEvent.change(firstNameInput, {
-    target: { name: "firstName", value: "Brandon" },
-  });
-  fireEvent.change(lastNameInput, {
-    target: { name: "lastName", value: "O'Neal" },
-  });
-  fireEvent.change(addressInput, {
-    target: { name: "address", value: "123 Main St" },
-  });
-  fireEvent.change(cityInput, {
-    target: { name: "city", value: "Atlanta" },
-  });
-  fireEvent.change(stateInput, {
-    target: { name: "state", value: "Georgia" },
-  });
-  fireEvent.change(zipInput, {
-    target: { name: "zip", value: "30303" },
-  });
-  fireEvent.click(submitButton);
+    fireEvent.click(screen.getAllByText(/checkout/i)[1]);
 
-  await screen.findByText(/You have ordered some plants!/i);
+    expect(screen.getByText(/You have ordered/i)).toBeInTheDocument();
 });
